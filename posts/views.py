@@ -4,6 +4,7 @@ from django.http import (
     HttpResponseForbidden,
 )
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from posts.forms import CommentForm, PostForm
 from posts.models import Post, Comment, PostImage
@@ -86,6 +87,7 @@ def post_add(request):
 
             # 모든 PostImage와 Post의 생성이 완료되면
             # 피드페이지로 이동하여 생성된 Post의 위치로 스크롤되도록 한다
+            url = reverse('posts:feeds')
             url = f"/posts/feeds/#post-{post.id}"
             return HttpResponseRedirect(url)
 
