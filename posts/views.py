@@ -12,7 +12,7 @@ from posts.models import Post, Comment, PostImage
 def feeds(request):
     user = request.user
     if not user.is_authenticated:
-        return redirect("/users/login/")
+        return redirect("/users/login2/")
 
     posts = Post.objects.all()
     comment_form = CommentForm()
