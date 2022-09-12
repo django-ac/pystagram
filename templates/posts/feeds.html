@@ -3,10 +3,10 @@
 {% block content %}
 <nav>
     <h1>
-        <a href="/posts/feeds/">Pystagram</a>
+        <a href="{% url 'posts:feeds' %}">Pystagram</a>
     </h1>
-    <a href="/posts/post_add/">Add post</a>
-    <a href="/users/logout/">Logout</a>
+    <a href="{% url 'posts:post_add' %}">Add post</a>
+    <a href="{% url 'users:logout' %}">Logout</a>
 </nav>
 <div id="feeds" class="post-container">
     <!-- 전달된 Post QuerySet객체를 순회 -->
@@ -54,7 +54,7 @@
 
                         <!-- 댓글 삭제 Form 추가 -->
                         {% if user == comment.user %}
-                            <form method="POST" action="/posts/comments/{{ comment.id }}/delete/">
+                            <form method="POST" action="{% url 'posts:comment_delete' comment_id=comment.id %}">
                                 {% csrf_token %}
                                 <button type="submit">삭제</button>
                             </form>
@@ -66,7 +66,7 @@
 
         <small>{{ post.created }}</small>
         <div class="post-comment-create">
-            <form method="POST" action="/posts/comment_add/">
+            <form method="POST" action="{% url 'posts:comment_add' %}">
                 {% csrf_token %}
                 <!-- 사용자가 직접 입력하지 않는 고정된 데이터를 form내부에 위치 -->
                 <input type="hidden" name="post" value="{{ post.id }}">
