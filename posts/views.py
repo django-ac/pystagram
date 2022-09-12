@@ -5,8 +5,8 @@ from django.http import (
 )
 from django.shortcuts import render, redirect
 
-from posts.forms import CommentForm
-from posts.models import Post, Comment
+from posts.forms import CommentForm, PostForm
+from posts.models import Post, Comment, PostImage
 
 
 def feeds(request):
@@ -61,3 +61,37 @@ def comment_delete(request, comment_id):
     else:
         # 이 View에 오는 GET요청은 잘못되었다고 브라우저에 돌려준다
         return HttpResponseBadRequest()
+
+
+def post_add(request):
+    if request.method == "POST":
+        # request.POST로 온 데이터 ("content")는 PostForm으로 처리
+        form = PostForm(request.POST)
+
+        if form.is_valid():
+            # Post의 "user"값은 request에서 가져와 자동할당한다
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+
+            # Post를 생성 한 후
+            # request.FILES.getlist("images")로 전송된 이미지들을 순회하며 PostImage객체를 생성한다
+            for image_file in request.FILES.getlist("images"):
+                # request.FILES또는 request.FILES.getlist()로 가져온 파일은
+                # Model의 ImageField부분에 곧바로 할당한다
+                PostImage.objects.create(
+                    post=post,
+                    photo=image_file,
+                )
+
+            # 모든 PostImage와 Post의 생성이 완료되면
+            # 피드페이지로 이동하여 생성된 Post의 위치로 스크롤되도록 한다
+            url = f"/posts/feeds/#post-{post.id}"
+            return HttpResponseRedirect(url)
+
+    # GET요청일 때는 빈 form을 보여주도록한다
+    else:
+        form = PostForm()
+
+    context = {"form": form}
+    return render(request, "posts/post_add.html", context)
