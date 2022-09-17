@@ -42,14 +42,15 @@ def comment_add(request):
         # DB에 Comment객체 저장
         comment.save()
 
-        # 생성된 Comment의 정보 확인
-        print(comment.id)
-        print(comment.content)
-        print(comment.user)
+        # URL로 "next"값을 전달받았다면 댓글 작성 완료 후 전달받은 값으로 이동한다
+        if request.GET.get("next"):
+            url_next = request.GET.get("next")
 
-        # 생성한 comment에서 연결된 post정보를 가져와서 id값을 사용
-        url = reverse("posts:feeds") + f"#post-{comment.post.id}"
-        return HttpResponseRedirect(url)
+        # "next"값을 전달받지 않았다면 피드페이지의 글 위치로 이동한다
+        else:
+            url_next = reverse("posts:feeds") + f"#post-{comment.post.id}"
+
+        return HttpResponseRedirect(url_next)
 
 
 def comment_delete(request, comment_id):
