@@ -21,6 +21,12 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
         (
+            "연관객체",
+            {
+                "fields": ("like_posts",),
+            },
+        ),
+        (
             "권한",
             {
                 "fields": (
