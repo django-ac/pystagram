@@ -87,6 +87,17 @@ def post_add(request):
                     photo=image_file,
                 )
 
+            # "tags"에 전달 된 문자열을 분리해 HashTag생성
+            tag_string = request.POST.get("tags")
+            if tag_string:
+                tag_name_list = [tag_name.strip() for tag_name in tag_string.split(",")]
+                for tag_name in tag_name_list:
+                    tag, _ = HashTag.objects.get_or_create(
+                        name=tag_name,
+                    )
+                    # get_or_create로 생성하거나 가져온 HashTag객체를 Post의 tags에 추가한다
+                    post.tags.add(tag)
+
             # 모든 PostImage와 Post의 생성이 완료되면
             # 피드페이지로 이동하여 생성된 Post의 위치로 스크롤되도록 한다
             url = reverse("posts:feeds") + f"#post-{post.id}"
