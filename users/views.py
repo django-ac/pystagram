@@ -55,3 +55,23 @@ def profile(request, user_id):
         "user": user,
     }
     return render(request, "users/profile.html", context)
+
+
+def followers(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    context = {
+        "user": user,
+        "title": "Followers",
+        "relationships": user.follower_relationships.all(),
+    }
+    return render(request, "users/followers.html", context)
+
+
+def following(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    context = {
+        "user": user,
+        "title": "Following",
+        "relationships": user.following_relationships.all(),
+    }
+    return render(request, "users/following.html", context)
